@@ -474,20 +474,20 @@ if __name__ == '__main__':
                 try:
                     ghIssue = repo.create_issue(row[1], body=body, assignee=assignee)
                     created = True
-                except:
-                    print '\tError creating issue, retrying in 2 seconds'
+                except Exception as ex:
+                    print '\tError creating issue, retrying in 2 seconds %s' % ex
                     time.sleep(2)
 
             if continuations:
                 for comment in continuations:
                     created = False
-                    while not created:
-                        try:
-                            ghIssue.create_comment(comment)
-                            created = True
-                        except:
-                            print '\tError creating comment, retrying in 2 seconds'
-                            time.sleep(2)
+#                    while not created:
+                    try:
+                        ghIssue.create_comment(comment)
+                        created = True
+                    except:
+                        print '\tError creating comment, retrying in 2 seconds'
+#                        time.sleep(2)
 
             #if isinstance(assignee, github.NamedUser.NamedUser):
             #    repo.remove_from_collaborators(assignee)
@@ -502,7 +502,7 @@ if __name__ == '__main__':
                 created = False
                 while not created:
                     try:
-                        ghIssue.create_comment('On *%s*, **%s** commented:\n\n%s' % (commentDate.strftime('%Y-%m-%d %H:%M:%S UTC'), commentor, comment[3]))
+                        ghIssue.create_comment('On *%s*, **@%s** commented:\n\n%s' % (commentDate.strftime('%Y-%m-%d %H:%M:%S UTC'), commentor, comment[3]))
                         created = True
                     except:
                         print '\tError creating comment, retrying in 2 seconds'
