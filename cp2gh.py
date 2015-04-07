@@ -411,8 +411,8 @@ if __name__ == '__main__':
             c.execute('SELECT LinkText, Href FROM attachments WHERE IssueID=?', (row[0], ))
 
             attachments = c.fetchall()
-            plaintext_attachments = [x for x in attachments if is_plain_text_file(x[0])]
-            binary_attachments = [x for x in attachments if not is_plain_text_file(x[0])]
+            plaintext_attachments = [] # [x for x in attachments if is_plain_text_file(x[0])]
+            binary_attachments = attachments # [x for x in attachments if not is_plain_text_file(x[0])]
 
             gist_files = {}
             for attachment in plaintext_attachments:
