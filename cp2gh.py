@@ -525,13 +525,18 @@ if __name__ == '__main__':
                 if 'labels' not in parameters:
                     parameters['labels'] = []
 
-                if len(label[0]):
-                    if (label[0] not in existingLabels):
-                        l = repo.create_label(label[0], '000000')
-                        parameters['labels'].append(l.name)
-                        existingLabels.append(l.name)
+                label_text = re.sub("""[^\w ]""", '', label[0])
+                if len(label_text):
+                    if (label_text not in existingLabels):
+                        print '\tCreating label: %s' % label_text
+                        try:
+                            l = repo.create_label(label_text, '000000')
+                            parameters['labels'].append(label_text)
+                            existingLabels.append(label_text)
+                        except:
+                            print '\tLabel creation failed for %s' % label_text
                     else:
-                        parameters['labels'].append(label[0])
+                        parameters['labels'].append(label_text)
 
             if row[3] == 'Closed':
                 parameters['state'] = 'closed'
