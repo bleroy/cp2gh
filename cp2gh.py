@@ -1,4 +1,4 @@
-"""Usage: cp2gh [-vq] [--usermap=USERMAP] [--skipcp] [--onlyopen] [--filter=<f>] [--count=COUNT] --ghuser=GHUSER --ghpass=GHPASS [--ghorg=GHORG] CPPROJECT GHREPO
+"""Usage: cp2gh [-vq] [--usermap=USERMAP] [--skipcp] [--onlyopen] [--filter=<f>] [--skip=N] [--count=COUNT] --ghuser=GHUSER --ghpass=GHPASS [--ghorg=GHORG] CPPROJECT GHREPO
           
 
 Process FILE and optionally apply correction to either left-hand side or
@@ -19,6 +19,7 @@ Options:
   --skipcp          skip parsing data from CodePlex and use existing issues.db file
   --onlyopen        only import issues that are currently open on CodePlex (this only matters during import from CodePlex to the database)
   --filter=<f>      skip importing issues based on filtering (this will be appended to the WHERE clause)
+  --skip=N          skip first N issues
   --count=COUNT     the number of issues to import (used mainly for testing)
 
 """
@@ -61,6 +62,7 @@ if __name__ == '__main__':
     password = options['--ghpass']
     org = options['--ghorg']
     skipcp = ('--skipcp' in options) and options['--skipcp']
+    skip = int(options['--skip'])
     only_open = ('--onlyopen' in options) and options['--onlyopen']
     curPage = 0
     maxCount = -1
@@ -373,6 +375,10 @@ if __name__ == '__main__':
         done = False
 
         while not done:
+            if skip > 0 and count < skip:
+                count = count + 1
+                break
+                
             if maxCount > 0 and count >= maxCount:
                 print 'Max count of issues reached'
                 done = True
